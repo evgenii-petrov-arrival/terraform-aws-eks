@@ -216,7 +216,9 @@ resource "aws_launch_template" "worker_groups" {
 resource "aws_iam_instance_profile" "worker_groups" {
   for_each = var.manage_worker_iam_resources ? local.worker_groups_expanded : {}
 
-  name_prefix = "${var.cluster_name}-${coalesce(each.value["name"], each.key)}"
+  # using just the cluster name, due to character limits, same as it was in the original module.
+  # https://github.com/terraform-aws-modules/terraform-aws-eks/blob/v13.2.1/workers_launch_template.tf#L514
+  name_prefix = var.cluster_name
   role        = each.value["iam_role_id"]
   path        = var.iam_path
 }
